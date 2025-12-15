@@ -1,0 +1,92 @@
+/* frontend/css/sound-controls.css */
+.sound-controls {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 15px;
+    border-radius: 20px;
+    border: 2px solid var(--christmas-gold);
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+}
+
+.sound-btn {
+    background: linear-gradient(135deg, var(--christmas-gold), #ffaa00);
+    color: black;
+    border: none;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-weight: bold;
+}
+
+.sound-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 20px var(--christmas-gold);
+}
+
+.sound-btn i {
+    font-size: 1.2rem;
+}
+
+.sound-btn span {
+    font-size: 0.7rem;
+    margin-top: 2px;
+}
+
+.volume-slider {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: white;
+}
+
+.volume-slider i {
+    color: var(--christmas-gold);
+    font-size: 1.2rem;
+}
+
+.volume-slider input[type="range"] {
+    width: 100px;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+    outline: none;
+    -webkit-appearance: none;
+}
+
+.volume-slider input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: var(--christmas-gold);
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    .sound-controls {
+        bottom: 10px;
+        right: 10px;
+        padding: 10px;
+    }
+    
+    .sound-btn {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .volume-slider input[type="range"] {
+        width: 80px;
+    }
+}

@@ -1,0 +1,162 @@
+@import url('https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&family=Nunito:wght@400;700&display=swap');
+
+:root {
+    --christmas-red: #d42426;
+    --christmas-green: #165b33;
+    --christmas-gold: #ffd700;
+    --christmas-blue: #0ea5e9;
+    --glass: rgba(255, 255, 255, 0.1);
+    --glass-border: rgba(255, 255, 255, 0.2);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: linear-gradient(rgba(0, 20, 40, 0.9), rgba(0, 10, 30, 0.9));
+    color: white;
+    font-family: 'Nunito', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* Snow Animation */
+.snow-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.snowflake {
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+    opacity: 0.8;
+    animation: fall linear infinite;
+}
+
+@keyframes fall {
+    to { transform: translateY(100vh); }
+}
+
+/* Christmas Lights */
+.lights {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: linear-gradient(90deg, 
+        #ff0000, #ff9900, #ffff00, #00ff00,
+        #00ffff, #0000ff, #9900ff, #ff00ff);
+    background-size: 800% 800%;
+    animation: lights 3s infinite linear;
+    z-index: 1000;
+}
+
+/* Main Container */
+.main-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    padding-top: 80px;
+}
+
+/* Cards */
+.graduate-panel {
+    background: rgba(0, 20, 40, 0.95);
+    backdrop-filter: blur(20px);
+    border: 2px solid;
+    border-image: linear-gradient(45deg, #ffd700, #ff6b6b, #4ecdc4) 1;
+    border-radius: 20px;
+    box-shadow: 
+        0 0 50px rgba(255, 215, 0, 0.3),
+        inset 0 0 30px rgba(255, 255, 255, 0.1);
+    padding: 30px;
+    margin: 20px 0;
+}
+
+/* Buttons */
+.btn-primary {
+    background: linear-gradient(135deg, var(--christmas-red), #a00);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 25px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(212, 36, 38, 0.4);
+}
+
+/* Grid for puzzle */
+.puzzle-grid {
+    display: grid;
+    gap: 5px;
+    margin: 20px auto;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 10px;
+    border-radius: 10px;
+    border: 2px solid var(--christmas-gold);
+}
+
+.tile {
+    background: var(--christmas-red);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s;
+    aspect-ratio: 1;
+}
+
+.tile:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 10px var(--christmas-gold);
+}
+
+.tile.empty {
+    background: transparent;
+    cursor: default;
+}
+
+.tile.correct {
+    background: var(--christmas-green);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .main-container {
+        padding: 10px;
+        padding-top: 60px;
+    }
+    
+    .puzzle-grid {
+        width: 95vw;
+        height: 95vw;
+        max-width: 400px;
+        max-height: 400px;
+    }
+    
+    .tile {
+        font-size: 18px;
+    }
+}

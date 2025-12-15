@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Challenge - Christmas Puzzle</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/graduate.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Root variables from index.html for consistency */
+        :root {
+            --christmas-red: #d42426;
+            --christmas-green: #165b33;
+            --christmas-gold: #ffd700;
+            --christmas-blue: #0ea5e9;
+            --gold: #ffd700;
+        }
+        
+        body {
+            background: linear-gradient(rgba(0, 20, 40, 0.9), rgba(0, 10, 30, 0.9));
+            background-size: cover;
+            background-attachment: fixed;
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            margin: 0;
+            padding: 0;
+        }
+        
+        /* Snow Animation */
+        #snowflakes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .snowflake {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.8;
+            animation: snowfall linear infinite;
+        }
+        
+        @keyframes snowfall {
+            0% { transform: translateY(-100px) rotate(0deg); }
+            100% { transform: translateY(100vh) rotate(360deg); }
+        }
+        
+        .daily-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+        
+        .daily-header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+        
+        .daily-title {
+            font-family: 'Mountains of Christmas', cursive;
+            font-size: 3rem;
+            color: #ffd700;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+            margin-bottom: 10px;
+        }
+        
+        .daily-date {
+            font-size: 1.2rem;
+            color: #94a3b8;
+            margin-bottom: 20px;
+        }
+        
+        .daily-badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .challenge-card {
+            background: rgba(10, 25, 47, 0.9);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            border: 3px solid;
+            border-image: linear-gradient(45deg, #ffd700, #ff6b6b, #4ecdc4) 1;
+            position: relative;
+        }
+        
+        .challenge-difficulty {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #0ea5e9, #0369a1);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+        
+        .challenge-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .info-item {
+            text-align: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+        }
+        
+        .info-icon {
+            font-size: 2rem;
+            color: var(--gold);
+            margin-bottom: 15px;
+        }
+        
+        .info-label {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+        
+        .info-value {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .challenge-description {
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #cbd5e1;
+        }
+        
+        .challenge-theme {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .theme-tag {
+            display: inline-block;
+            background: rgba(139, 92, 246, 0.2);
+            color: #a78bfa;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            border: 2px solid rgba(139, 92, 246, 0.3);
+        }
+        
+        .action-section {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .btn-daily-start {
+            background: linear-gradient(135deg, var(--gold), #ffaa00);
+            color: black;
+            border: none;
+            padding: 20px 50px;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .btn-daily-start:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(255, 215, 0, 0.3);
+        }
+        
+        .leaderboard-section {
+            margin-top: 50px;
+        }
+        
+        .leaderboard-title {
+            text-align: center;
+            font-size: 1.8rem;
+            color: var(--gold);
+            margin-bottom: 30px;
+        }
+        
+        .leaderboard-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 15px;
+            overflow: hidden;
+        }
+        
+        .leaderboard-table th {
+            background: rgba(255, 215, 0, 0.2);
+            padding: 20px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        .leaderboard-table td {
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .rank-1 td:first-child {
+            background: rgba(255, 215, 0, 0.1);
+            color: var(--gold);
+            font-weight: bold;
+        }
+        
+        .rank-2 td:first-child {
+            background: rgba(192, 192, 192, 0.1);
+            color: #c0c0c0;
+        }
+        
+        .rank-3 td:first-child {
+            background: rgba(205, 127, 50, 0.1);
+            color: #cd7f32;
+        }
+        
+        .user-rank {
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--gold), #ff6b6b);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .time-cell {
+            font-family: monospace;
+            font-size: 1.1rem;
+        }
+        
+        .prizes-section {
+            margin-top: 50px;
+            text-align: center;
+        }
+        
+        .prizes-title {
+            font-size: 1.8rem;
+            color: var(--gold);
+            margin-bottom: 30px;
+        }
+        
+        .prizes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+        }
+        
+        .prize-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .prize-item:hover {
+            border-color: var(--gold);
+            transform: translateY(-5px);
+        }
+        
+        .prize-rank {
+            font-size: 2rem;
+            color: var(--gold);
+            margin-bottom: 10px;
+        }
+        
+        .prize-xp {
+            color: #10b981;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+        
+        .prize-badge {
+            margin-top: 10px;
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+        
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+        
+        .back-btn:hover {
+            background: rgba(255, 215, 0, 0.2);
+            color: var(--gold);
+        }
+        
+        @media (max-width: 768px) {
+            .daily-container {
+                padding: 20px 15px;
+            }
+            
+            .daily-title {
+                font-size: 2rem;
+            }
+            
+            .daily-badge {
+                position: static;
+                display: inline-block;
+                margin-bottom: 20px;
+            }
+            
+            .challenge-card {
+                padding: 30px 20px;
+            }
+            
+            .challenge-info {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .btn-daily-start {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .leaderboard-table {
+                font-size: 0.9rem;
+            }
+            
+            .leaderboard-table th,
+            .leaderboard-table td {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Snowflakes -->
+    <div id="snowflakes"></div>
+    
+    <!-- Back Button -->
+    <button class="back-btn" onclick="window.location.href='index.html'">
+        <i class="fas fa-arrow-left"></i> Back to Menu
+    </button>
+    
+    <!-- Main Container -->
+    <div class="daily-container">
+        <div class="daily-header">
+            <h1 class="daily-title">🎄 Daily Challenge</h1>
+            <div class="daily-date" id="currentDate"></div>
+            <div class="daily-badge" id="participationBadge">
+                <i class="fas fa-calendar-star"></i> Day 7 Streak!
+            </div>
+        </div>
+        
+        <!-- Challenge Card -->
+        <div class="challenge-card">
+            <div class="challenge-difficulty" id="challengeDifficulty">
+                <i class="fas fa-chart-line"></i> Expert Challenge
+            </div>
+            
+            <div class="challenge-info">
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-puzzle-piece"></i>
+                    </div>
+                    <div class="info-label">Puzzle Size</div>
+                    <div class="info-value" id="puzzleSize">5×5</div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="info-label">Time Limit</div>
+                    <div class="info-value" id="timeLimit">5:00</div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <div class="info-label">Max Reward</div>
+                    <div class="info-value" id="maxReward">250 XP</div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="info-label">Participants</div>
+                    <div class="info-value" id="participants">1,247</div>
+                </div>
+            </div>
+            
+            <div class="challenge-description" id="challengeDescription">
+                Today's special holiday challenge features a 5×5 Christmas ornament puzzle. 
+                Complete it within 5 minutes to earn bonus XP and climb the global leaderboard. 
+                The puzzle gets more difficult every 30 seconds, so plan your moves carefully!
+            </div>
+            
+            <div class="challenge-theme">
+                <span class="theme-tag" id="challengeTheme">
+                    <i class="fas fa-palette"></i> Ornament Garden Theme
+                </span>
+            </div>
+            
+            <div class="action-section">
+                <button class="btn-daily-start" onclick="startDailyChallenge()">
+                    <i class="fas fa-play"></i>
+                    Start Daily Challenge
+                </button>
+            </div>
+        </div>
+        
+        <!-- Leaderboard -->
+        <div class="leaderboard-section">
+            <h2 class="leaderboard-title">
+                <i class="fas fa-crown"></i> Today's Leaderboard
+            </h2>
+            
+            <table class="leaderboard-table" id="dailyLeaderboard">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Player</th>
+                        <th>Time</th>
+                        <th>Moves</th>
+                        <th>Score</th>
+                    </tr>
+                </thead>
+                <tbody id="leaderboardBody">
+                    <!-- Will be populated by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Prizes -->
+        <div class="prizes-section">
+            <h2 class="prizes-title">
+                <i class="fas fa-gift"></i> Today's Prizes
+            </h2>
+            
+            <div class="prizes-grid">
+                <div class="prize-item">
+                    <div class="prize-rank">🥇</div>
+                    <div class="prize-xp">250 XP</div>
+                    <div class="prize-badge">Golden Ornament</div>
+                </div>
+                
+                <div class="prize-item">
+                    <div class="prize-rank">🥈</div>
+                    <div class="prize-xp">150 XP</div>
+                    <div class="prize-badge">Silver Bell</div>
+                </div>
+                
+                <div class="prize-item">
+                    <div class="prize-rank">🥉</div>
+                    <div class="prize-xp">100 XP</div>
+                    <div class="prize-badge">Bronze Candle</div>
+                </div>
+                
+                <div class="prize-item">
+                    <div class="prize-rank">🏅</div>
+                    <div class="prize-xp">50 XP</div>
+                    <div class="prize-badge">Top 10</div>
+                </div>
+                
+                <div class="prize-item">
+                    <div class="prize-rank">🎯</div>
+                    <div class="prize-xp">25 XP</div>
+                    <div class="prize-badge">Completion</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- JavaScript -->
+    <script>
+        // Set current date
+        const now = new Date();
+        const options = { 
+            weekday: 'long', 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+        };
+        document.getElementById('currentDate').textContent = 
+            now.toLocaleDateString('en-US', options);
+        
+        // Load leaderboard
+        async function loadLeaderboard() {
+            try {
+                // This would fetch from your API
+                // const response = await fetch('/api/daily-leaderboard');
+                // const data = await response.json();
+                
+                // For now, use sample data
+                renderSampleLeaderboard();
+            } catch (error) {
+                console.log('Using sample leaderboard data');
+                renderSampleLeaderboard();
+            }
+        }
+        
+        function renderLeaderboard(leaderboard) {
+            const tbody = document.getElementById('leaderboardBody');
+            tbody.innerHTML = '';
+            
+            leaderboard.forEach((entry, index) => {
+                const row = document.createElement('tr');
+                if (index < 3) row.classList.add(`rank-${index + 1}`);
+                
+                row.innerHTML = `
+                    <td class="user-rank">${index + 1}</td>
+                    <td>
+                        <div style="display: flex; align-items: center;">
+                            <div class="user-avatar">${entry.username.charAt(0)}</div>
+                            ${entry.username}
+                        </div>
+                    </td>
+                    <td class="time-cell">${formatTime(entry.time)}</td>
+                    <td>${entry.moves}</td>
+                    <td>${entry.score}</td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+        }
+        
+        function renderSampleLeaderboard() {
+            const sampleData = [
+                { username: 'Santa_Claus', time: 142, moves: 48, score: 985 },
+                { username: 'Elf_Master', time: 156, moves: 52, score: 942 },
+                { username: 'Rudolph', time: 168, moves: 55, score: 901 },
+                { username: 'Snow_Queen', time: 185, moves: 60, score: 845 },
+                { username: 'Frosty', time: 192, moves: 62, score: 821 },
+                { username: 'Gingerbread', time: 210, moves: 68, score: 765 },
+                { username: 'Candy_Cane', time: 225, moves: 72, score: 721 },
+                { username: 'Mistletoe', time: 240, moves: 75, score: 685 },
+                { username: 'Jingle_Bell', time: 258, moves: 80, score: 642 },
+                { username: 'North_Pole', time: 275, moves: 85, score: 601 }
+            ];
+            
+            renderLeaderboard(sampleData);
+        }
+        
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+        
+        function startDailyChallenge() {
+            // Set daily challenge parameters
+            localStorage.setItem('dailyChallenge', 'true');
+            localStorage.setItem('boardSize', 5);
+            localStorage.setItem('timeLimit', 300);
+            localStorage.setItem('theme', 'ornament');
+            localStorage.setItem('difficulty', 4);
+            
+            window.location.href = 'puzzle.html?daily=true';
+        }
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadLeaderboard();
+            
+            // Create animated snowflakes
+            for (let i = 0; i < 50; i++) {
+                const flake = document.createElement('div');
+                flake.className = 'snowflake';
+                flake.style.width = Math.random() * 10 + 5 + 'px';
+                flake.style.height = flake.style.width;
+                flake.style.left = Math.random() * 100 + 'vw';
+                flake.style.animationDuration = Math.random() * 10 + 5 + 's';
+                flake.style.animationDelay = Math.random() * 5 + 's';
+                flake.style.opacity = Math.random() * 0.5 + 0.3;
+                document.getElementById('snowflakes').appendChild(flake);
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1986 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Christmas Puzzle Game - Graduate Edition</title>
+    
+    <!-- ALL CSS FILES FOR GRADUATE FEATURES ARE INCLUDED IN THIS FILE-->
+    <link rel='stylesheet' href='css/style.css'>
+    <link rel="stylesheet" href="css/graduate.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/auth.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Christmas Puzzle Game Styles */
+        :root {
+            --christmas-red: #d42426;
+            --christmas-green: #165b33;
+            --christmas-gold: #ffd700;
+            --christmas-blue: #0ea5e9;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0a1929, #001220);
+            color: white;
+            font-family: 'Nunito', sans-serif;
+            text-align: center;
+            padding: 20px;
+            min-height: 100vh;
+            margin: 0;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* Snow Animation */
+        #snowflakes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .snowflake {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.8;
+            animation: snowfall linear infinite;
+        }
+        
+        @keyframes snowfall {
+            0% { transform: translateY(-100px) rotate(0deg); }
+            100% { transform: translateY(100vh) rotate(360deg); }
+        }
+        
+        /* Main Container */
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 20px;
+            border: 3px solid var(--christmas-gold);
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+            backdrop-filter: blur(10px);
+        }
+        
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(255, 215, 0, 0.3);
+        }
+        
+        h1 {
+            color: var(--christmas-gold);
+            margin: 0;
+            font-size: 1.8rem;
+            font-family: 'Mountains of Christmas', cursive;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+        
+        .back-btn {
+            background: rgba(255, 215, 0, 0.2);
+            color: var(--christmas-gold);
+            border: 2px solid var(--christmas-gold);
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+        
+        .back-btn:hover {
+            background: rgba(255, 215, 0, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        /* Stats Display */
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            background: rgba(255, 215, 0, 0.1);
+            padding: 15px;
+            border-radius: 15px;
+            margin: 20px 0;
+            font-weight: bold;
+            font-size: 1.2rem;
+            border: 2px solid rgba(255, 215, 0, 0.2);
+        }
+        
+        .stats div {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        /* Puzzle Grid */
+        .grid {
+            display: grid;
+            gap: 5px;
+            margin: 20px auto;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            border-radius: 10px;
+            border: 2px solid var(--christmas-gold);
+        }
+        
+        .tile {
+            background: var(--christmas-red);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            aspect-ratio: 1;
+            user-select: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        
+        .tile:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px var(--christmas-gold);
+        }
+        
+        .tile.empty {
+            background: transparent;
+            cursor: default;
+            box-shadow: none;
+        }
+        
+        .tile.empty:hover {
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .tile.correct {
+            background: var(--christmas-green);
+            box-shadow: inset 0 0 10px var(--christmas-gold);
+        }
+        
+        .tile.movable {
+            border: 2px solid var(--christmas-gold);
+        }
+        
+        /* Controls Panel */
+        .panel {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 25px 0;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            background: linear-gradient(135deg, var(--christmas-red), #a00);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1rem;
+            box-shadow: 0 4px 15px rgba(212, 36, 38, 0.4);
+        }
+        
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(212, 36, 38, 0.6);
+        }
+        
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        /* Graduate Features Section */
+        .graduate-features {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(30, 41, 59, 0.8);
+            border-radius: 15px;
+            border-left: 4px solid var(--christmas-gold);
+        }
+        
+        .feature-title {
+            color: var(--christmas-gold);
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        
+        .feature-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .feature-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-3px);
+        }
+        
+        .feature-icon {
+            font-size: 1.5rem;
+            color: var(--christmas-gold);
+            margin-bottom: 8px;
+        }
+        
+        .feature-name {
+            font-size: 0.9rem;
+            color: #cbd5e1;
+        }
+        
+        /* Victory Modal */
+        .victory-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            backdrop-filter: blur(10px);
+        }
+        
+        .victory-content {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            padding: 40px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            border: 3px solid var(--christmas-gold);
+            animation: popup 0.5s ease-out;
+        }
+        
+        @keyframes popup {
+            from {
+                opacity: 0;
+                transform: scale(0.8) translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+        
+        /* Confetti Animation */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            opacity: 0;
+            animation: confettiFall 3s ease-out forwards;
+            z-index: 9999;
+        }
+        
+        @keyframes confettiFall {
+            0% {
+                opacity: 1;
+                transform: translateY(-100px) rotate(0deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(100vh) rotate(720deg);
+            }
+        }
+        
+        /* Mana Bar */
+        .mana-bar {
+            width: 100%;
+            height: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            margin: 15px 0;
+            overflow: hidden;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+        }
+        
+        .mana-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00b4d8, #0077b6);
+            border-radius: 10px;
+            transition: width 0.3s;
+            width: 100%;
+        }
+        
+        /* AI Suggestion Panel */
+        .ai-suggestion-panel {
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid #38bdf8;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: left;
+            animation: pulseGlow 3s infinite;
+        }
+        
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 10px rgba(56, 189, 248, 0.3); }
+            50% { box-shadow: 0 0 20px rgba(56, 189, 248, 0.5); }
+        }
+        
+        /* Story Progress */
+        .story-progress-bar {
+            width: 100%;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+        
+        .story-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--christmas-gold), #ffaa00);
+            border-radius: 5px;
+            transition: width 0.5s;
+        }
+        
+        /* Frost Effect Animation */
+        @keyframes frostFloat {
+            0% {
+                opacity: 0;
+                transform: translateY(0) rotate(0deg);
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-100px) rotate(360deg);
+            }
+        }
+        
+        .power-up-timer {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            margin-left: 5px;
+        }
+        
+        /* Cooldown State */
+        .cooldown {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: linear-gradient(135deg, #666, #444) !important;
+        }
+        
+        /* Power-up Active Effect */
+        .power-up-active {
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 5px var(--christmas-gold); }
+            50% { box-shadow: 0 0 20px var(--christmas-gold); }
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+                margin: 10px;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .grid {
+                width: 95vw;
+                height: 95vw;
+                max-width: 400px;
+                max-height: 400px;
+            }
+            
+            .tile {
+                font-size: 18px;
+            }
+            
+            .panel {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            button {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+            
+            .stats {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 375px) {
+            .container {
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 1.3rem;
+            }
+            
+            .tile {
+                font-size: 16px;
+            }
+            
+            button {
+                padding: 10px 15px;
+                font-size: 0.9rem;
+            }
+        }
+        
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--christmas-gold);
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Achievement Badges */
+        .achievement-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--christmas-gold), #ffaa00);
+            color: black;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin: 5px;
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        
+        /* Power-up Indicators */
+        .power-up-indicator {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 8px 15px;
+            background: rgba(139, 92, 246, 0.2);
+            border-radius: 15px;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            animation: pulse 2s infinite;
+        }
+        
+        /* Version-specific themes */
+        .theme-santa {
+            background: linear-gradient(135deg, #0a1929, #001220);
+        }
+        
+        .theme-reindeer {
+            background: linear-gradient(135deg, #0c4a6e, #082f49);
+        }
+        
+        .theme-elf {
+            background: linear-gradient(135deg, #064e3b, #022c22);
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Music -->
+    <audio id="bgMusic" loop>
+        <source src="assets/music/christmas_soft.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+    
+    <!-- Sound Effects (hidden) -->
+    <audio id="clickSound" preload="auto">
+        <source src="assets/sounds/click.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="shuffleSound" preload="auto">
+        <source src="assets/sounds/shuffle.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="winSound" preload="auto">
+        <source src="assets/sounds/win.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="moveSound" preload="auto">
+        <source src="assets/sounds/click.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="hintSound" preload="auto">
+        <source src="assets/sounds/click.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="magicSound" preload="auto">
+        <source src="assets/sounds/shuffle.mp3" type="audio/mpeg">
+    </audio>
+    
+    <!-- Snowflakes Animation -->
+    <div id="snowflakes"></div>
+    
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <button class="back-btn" onclick="goToMenu()">
+                <i class="fas fa-arrow-left"></i> Menu
+            </button>
+            <h1 id="gameTitle">🎄 Christmas Puzzle</h1>
+            <div style="width: 100px;"></div> <!-- Spacer -->
+        </div>
+        
+        <!-- Game Info -->
+        <div id="gameInfo" style="margin-bottom: 20px;">
+            <div style="color: var(--christmas-gold); font-size: 1.2rem; margin-bottom: 10px;" id="versionDisplay"></div>
+            <div style="color: #94a3b8;" id="sizeDisplay"></div>
+        </div>
+        
+        <!-- Stats -->
+        <div class="stats">
+            <div>
+                <div style="color: #94a3b8; font-size: 0.9rem;">Moves</div>
+                <div id="movesCount" style="color: var(--christmas-gold);">0</div>
+            </div>
+            <div>
+                <div style="color: #94a3b8; font-size: 0.9rem;">Time</div>
+                <div id="timerDisplay" style="color: var(--christmas-gold);">0s</div>
+            </div>
+            <div>
+                <div style="color: #94a3b8; font-size: 0.9rem;">Mana</div>
+                <div id="manaDisplay" style="color: #00b4d8; font-weight: bold;">100</div>
+            </div>
+            <div>
+                <div style="color: #94a3b8; font-size: 0.9rem;">Difficulty</div>
+                <div id="difficultyDisplay" style="color: var(--christmas-gold);">1.0</div>
+            </div>
+        </div>
+        
+        <!-- Mana Bar -->
+        <div class="mana-bar">
+            <div id="manaFill" class="mana-fill"></div>
+        </div>
+        
+        <!-- AI Suggestion Panel -->
+        <div id="aiSuggestionPanel" class="ai-suggestion-panel" style="display: none;">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                <i class="fas fa-robot" style="color: #38bdf8;"></i>
+                <h4 style="margin: 0; color: #38bdf8;">AI Assistant</h4>
+            </div>
+            <p id="aiSuggestionText" style="margin: 0; color: white; font-size: 0.9rem;">
+                Analyzing your moves... Try solving corners first!
+            </p>
+        </div>
+        
+        <!-- Puzzle Grid -->
+        <div id="puzzleGrid" class="grid"></div>
+        
+        <!-- Controls -->
+        <div class="panel">
+            <button onclick="shufflePuzzle()">
+                <i class="fas fa-random"></i> Shuffle
+            </button>
+            <button onclick="useHint()" id="hintBtn">
+                <i class="fas fa-lightbulb"></i> Hint
+                <span id="hintCost" style="font-size: 0.8rem;">(25)</span>
+            </button>
+            <button onclick="useMagic('shuffle')" id="shuffleBtn">
+                <i class="fas fa-magic"></i> Shuffle Magic
+                <span id="shuffleCost" style="font-size: 0.8rem;">(30)</span>
+            </button>
+            <button onclick="useMagic('solve')" id="solveBtn">
+                <i class="fas fa-star"></i> Solve Piece
+                <span id="solveCost" style="font-size: 0.8rem;">(50)</span>
+            </button>
+            <!-- New power-up buttons -->
+            <button onclick="useMagic('vision')" id="visionBtn">
+                <i class="fas fa-eye"></i> Crystal Vision
+                <span id="visionCost" style="font-size: 0.8rem;">(35)</span>
+            </button>
+            <button onclick="useMagic('freeze')" id="freezeBtn">
+                <i class="fas fa-clock"></i> Time Freeze
+                <span id="freezeCost" style="font-size: 0.8rem;">(40)</span>
+            </button>
+            <button onclick="saveGame()">
+                <i class="fas fa-save"></i> Save
+            </button>
+        </div>
+        
+        <!-- Story Progress -->
+        <div style="margin: 20px 0;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                <span style="color: #94a3b8; font-size: 0.9rem;">Story Progress</span>
+                <span style="color: var(--christmas-gold); font-size: 0.9rem;" id="storyChapter">Chapter 1</span>
+            </div>
+            <div class="story-progress-bar">
+                <div id="storyProgressFill" class="story-progress-fill" style="width: 20%;"></div>
+            </div>
+        </div>
+        
+        <!-- Active Power-ups -->
+        <div id="activePowerups" style="margin: 15px 0; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+            <!-- Will be populated by JavaScript -->
+        </div>
+        
+        <!-- Graduate Features -->
+        <div class="graduate-features">
+            <div class="feature-title">
+                <i class="fas fa-graduation-cap"></i> Graduate Features Active
+            </div>
+            <div class="feature-grid">
+                <div class="feature-item">
+                    <div class="feature-icon"><i class="fas fa-brain"></i></div>
+                    <div class="feature-name">Predictive AI</div>
+                    <div style="font-size: 0.8rem; color: #38bdf8;" id="aiStatus">Analyzing...</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon"><i class="fas fa-database"></i></div>
+                    <div class="feature-name">MySQL Backend</div>
+                    <div style="font-size: 0.8rem; color: #10b981;" id="dbStatus">Connected</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon"><i class="fas fa-hat-wizard"></i></div>
+                    <div class="feature-name">Magic System</div>
+                    <div style="font-size: 0.8rem; color: #a855f7;">5 Power-ups</div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon"><i class="fas fa-book"></i></div>
+                    <div class="feature-name">Interactive Story</div>
+                    <div style="font-size: 0.8rem; color: #f59e0b;">5 Chapters</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Achievements -->
+        <div id="achievementsPanel" style="margin-top: 20px; padding: 15px; background: rgba(255,215,0,0.1); border-radius: 10px; display: none;">
+            <h4 style="color: var(--christmas-gold); margin-bottom: 10px;">
+                <i class="fas fa-trophy"></i> Recent Achievements
+            </h4>
+            <div id="achievementsList" style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Victory Modal (Hidden by default) -->
+    <div class="victory-modal" id="victoryModal">
+        <div class="victory-content">
+            <h1 style="color: var(--christmas-gold); font-size: 2.5rem; margin-bottom: 20px;">
+                🎉 VICTORY! 🎉
+            </h1>
+            
+            <div style="margin: 30px 0;">
+                <div style="font-size: 1.2rem; color: #94a3b8; margin-bottom: 20px;">You solved the puzzle!</div>
+                
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 30px;">
+                    <div style="background: rgba(255,215,0,0.1); padding: 15px; border-radius: 10px;">
+                        <div style="color: #94a3b8;">Time</div>
+                        <div style="color: var(--christmas-gold); font-size: 1.5rem; font-weight: bold;" id="victoryTime">0s</div>
+                    </div>
+                    <div style="background: rgba(59,130,246,0.1); padding: 15px; border-radius: 10px;">
+                        <div style="color: #94a3b8;">Moves</div>
+                        <div style="color: #3b82f6; font-size: 1.5rem; font-weight: bold;" id="victoryMoves">0</div>
+                    </div>
+                    <div style="background: rgba(34,197,94,0.1); padding: 15px; border-radius: 10px;">
+                        <div style="color: #94a3b8;">Efficiency</div>
+                        <div style="color: #22c55e; font-size: 1.5rem; font-weight: bold;" id="victoryEfficiency">0.00</div>
+                    </div>
+                    <div style="background: rgba(139,92,246,0.1); padding: 15px; border-radius: 10px;">
+                        <div style="color: #94a3b8;">Difficulty</div>
+                        <div style="color: #8b5cf6; font-size: 1.5rem; font-weight: bold;" id="victoryDifficulty">1.0</div>
+                    </div>
+                </div>
+                
+                <div style="background: rgba(56,189,248,0.1); padding: 20px; border-radius: 10px; border-left: 4px solid #38bdf8; margin-bottom: 20px;">
+                    <div style="color: #94a3b8; margin-bottom: 10px;">AI Analysis</div>
+                    <div style="color: white;" id="victoryAnalysis">
+                        Great job! Your solving time improved by 15% from last game.
+                    </div>
+                </div>
+                
+                <div style="margin: 20px 0;">
+                    <div style="color: #94a3b8; margin-bottom: 10px;">Achievements Unlocked:</div>
+                    <div id="victoryAchievements" style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
+                
+                <div style="margin: 20px 0;">
+                    <div style="color: #94a3b8; margin-bottom: 10px;">Story Progress:</div>
+                    <div class="story-progress-bar" style="width: 100%;">
+                        <div id="victoryProgressFill" class="story-progress-fill"></div>
+                    </div>
+                    <div style="color: white; margin-top: 5px;" id="victoryStoryProgress">
+                        Chapter 1: 20% complete
+                    </div>
+                </div>
+            </div>
+            
+            <div style="display: flex; gap: 15px; justify-content: center; margin-top: 30px;">
+                <button onclick="playAgain()" style="background: linear-gradient(135deg, #10b981, #047857);">
+                    <i class="fas fa-redo"></i> Play Again
+                </button>
+                <button onclick="goToMenu()" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3);">
+                    <i class="fas fa-home"></i> Main Menu
+                </button>
+                <button onclick="shareVictory()" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);">
+                    <i class="fas fa-share"></i> Share
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Game JavaScript -->
+    <script>
+        // ========== POWER-UP SYSTEM INTEGRATION ==========
+
+        /* ================= IMAGE PUZZLE SYSTEM ================= */
+
+const PUZZLE_IMAGES = {
+    santa: 'assets/images/santa.jpg',
+    reindeer: 'assets/images/reindeer.jpg',
+    elf: 'assets/images/elf.jpg'
+};
+
+const puzzleImage = new Image();
+
+function loadPuzzleImage() {
+    puzzleImage.src =
+        PUZZLE_IMAGES[gameState.version] || PUZZLE_IMAGES.santa;
+}
+
+        
+        // Initialize Magic Power-up System
+        let magicSystem = null;
+        
+        // PowerUpSystem Class (from your powerups.js)
+        class PowerUpSystem {
+            constructor() {
+                this.powerUps = {
+                    hint: {
+                        name: "Elf's Wisdom",
+                        cost: 25,
+                        effect: "Highlights the optimal next move",
+                        duration: 5,
+                        cooldown: 30,
+                        icon: "fa-lightbulb"
+                    },
+                    timeFreeze: {
+                        name: "Frozen Moment",
+                        cost: 40,
+                        effect: "Freezes the timer for 10 seconds",
+                        duration: 10,
+                        cooldown: 60,
+                        icon: "fa-clock"
+                    },
+                    shuffle: {
+                        name: "Reindeer Shuffle",
+                        cost: 30,
+                        effect: "Reshuffles the puzzle while keeping it solvable",
+                        duration: 0,
+                        cooldown: 45,
+                        icon: "fa-random"
+                    },
+                    solvePiece: {
+                        name: "Santa's Magic",
+                        cost: 50,
+                        effect: "Instantly solves one misplaced tile",
+                        duration: 0,
+                        cooldown: 90,
+                        icon: "fa-star"
+                    },
+                    vision: {
+                        name: "Crystal Ball",
+                        cost: 35,
+                        effect: "Shows the correct position of all tiles",
+                        duration: 8,
+                        cooldown: 45,
+                        icon: "fa-eye"
+                    }
+                };
+                
+                this.activePowerUps = new Map();
+                this.cooldowns = new Map();
+                this.cooldownTimers = new Map();
+            }
+            
+            canUsePowerUp(powerUpName, mana) {
+                const powerUp = this.powerUps[powerUpName];
+                if (!powerUp) return false;
+                
+                // Check mana
+                if (mana < powerUp.cost) {
+                    return { success: false, reason: `Not enough mana! Need ${powerUp.cost}, have ${mana}` };
+                }
+                
+                // Check cooldown
+                const cooldownEnd = this.cooldowns.get(powerUpName);
+                if (cooldownEnd && Date.now() < cooldownEnd) {
+                    const remaining = Math.ceil((cooldownEnd - Date.now()) / 1000);
+                    return { success: false, reason: `On cooldown! ${remaining}s remaining` };
+                }
+                
+                return { success: true };
+            }
+            
+            activatePowerUp(powerUpName, gameInstance) {
+                const powerUp = this.powerUps[powerUpName];
+                if (!powerUp) return false;
+                
+                // Check if can use
+                const canUse = this.canUsePowerUp(powerUpName, gameInstance.mana);
+                if (!canUse.success) {
+                    showNotification(canUse.reason, 'error');
+                    return false;
+                }
+                
+                // Deduct mana
+                gameInstance.mana -= powerUp.cost;
+                
+                // Apply effect
+                this.applyEffect(powerUpName, gameInstance);
+                
+                // Set cooldown
+                const cooldownEnd = Date.now() + powerUp.cooldown * 1000;
+                this.cooldowns.set(powerUpName, cooldownEnd);
+                this.startCooldownTimer(powerUpName, cooldownEnd);
+                
+                // Set as active if it has duration
+                if (powerUp.duration > 0) {
+                    this.activePowerUps.set(powerUpName, {
+                        startTime: Date.now(),
+                        duration: powerUp.duration * 1000,
+                        remaining: powerUp.duration
+                    });
+                    this.startPowerUpTimer(powerUpName, powerUp.duration);
+                }
+                
+                return true;
+            }
+            
+            applyEffect(powerUpName, game) {
+                switch(powerUpName) {
+                    case 'hint':
+                        this.applyHintEffect(game);
+                        break;
+                    case 'timeFreeze':
+                        this.applyTimeFreezeEffect(game);
+                        break;
+                    case 'shuffle':
+                        this.applyShuffleEffect(game);
+                        break;
+                    case 'solvePiece':
+                        this.applySolvePieceEffect(game);
+                        break;
+                    case 'vision':
+                        this.applyVisionEffect(game);
+                        break;
+                }
+            }
+            
+            applyHintEffect(game) {
+                // Find the optimal move
+                const optimalMove = this.findOptimalMove(game);
+                if (optimalMove !== null) {
+                    this.highlightTile(optimalMove);
+                }
+            }
+            
+            applyTimeFreezeEffect(game) {
+                clearInterval(game.timer);
+                setTimeout(() => {
+                    game.startTimer();
+                }, this.powerUps.timeFreeze.duration * 1000);
+            }
+            
+            applyShuffleEffect(game) {
+                shufflePuzzle();
+            }
+            
+            applySolvePieceEffect(game) {
+                // Find first wrong tile
+                for (let i = 0; i < game.tiles.length - 1; i++) {
+                    if (game.tiles[i] !== 0 && game.tiles[i] !== i + 1) {
+                        const emptyIndex = game.tiles.indexOf(0);
+                        [game.tiles[i], game.tiles[emptyIndex]] = 
+                        [game.tiles[emptyIndex], game.tiles[i]];
+                        game.moves += 5; // Penalty for using magic
+                        drawPuzzle();
+                        return;
+                    }
+                }
+            }
+            
+            applyVisionEffect(game) {
+                // Show correct positions for duration
+                this.showCorrectPositions(game);
+            }
+            
+            findOptimalMove(game) {
+                const emptyIndex = game.tiles.indexOf(0);
+                const possibleMoves = [];
+                
+                const row = Math.floor(emptyIndex / game.size);
+                const col = emptyIndex % game.size;
+                
+                // Check all adjacent tiles
+                if (row > 0) possibleMoves.push(emptyIndex - game.size);
+                if (row < game.size - 1) possibleMoves.push(emptyIndex + game.size);
+                if (col > 0) possibleMoves.push(emptyIndex - 1);
+                if (col < game.size - 1) possibleMoves.push(emptyIndex + 1);
+                
+                // Return random move for now (in real implementation, use AI)
+                return possibleMoves.length > 0 ? 
+                    possibleMoves[Math.floor(Math.random() * possibleMoves.length)] : null;
+            }
+            
+            highlightTile(tileIndex) {
+                const tile = document.querySelectorAll('.tile')[tileIndex];
+                if (tile) {
+                    tile.classList.add('power-up-active');
+                    tile.style.boxShadow = '0 0 20px #00ff00';
+                    
+                    setTimeout(() => {
+                        tile.classList.remove('power-up-active');
+                        tile.style.boxShadow = '';
+                    }, 5000);
+                }
+            }
+            
+            showCorrectPositions(game) {
+                const tiles = document.querySelectorAll('.tile:not(.empty)');
+                tiles.forEach(tile => {
+                    const value = parseInt(tile.textContent);
+                    const index = Array.from(tile.parentNode.children).indexOf(tile);
+                    const isCorrect = value === index + 1;
+                    
+                    tile.style.border = isCorrect ? '3px solid #00ff00' : '3px solid #ff0000';
+                    tile.style.boxShadow = isCorrect ? '0 0 15px #00ff00' : '0 0 15px #ff0000';
+                });
+                
+                setTimeout(() => {
+                    tiles.forEach(tile => {
+                        tile.style.border = '';
+                        tile.style.boxShadow = '';
+                    });
+                }, this.powerUps.vision.duration * 1000);
+            }
+            
+            startCooldownTimer(powerUpName, cooldownEnd) {
+                // Clear existing timer
+                if (this.cooldownTimers.has(powerUpName)) {
+                    clearInterval(this.cooldownTimers.get(powerUpName));
+                }
+                
+                const timer = setInterval(() => {
+                    const remaining = Math.ceil((cooldownEnd - Date.now()) / 1000);
+                    if (remaining <= 0) {
+                        clearInterval(timer);
+                        this.cooldowns.delete(powerUpName);
+                        this.cooldownTimers.delete(powerUpName);
+                        updatePowerUpButtons();
+                    }
+                }, 1000);
+                
+                this.cooldownTimers.set(powerUpName, timer);
+            }
+            
+            startPowerUpTimer(powerUpName, duration) {
+                const powerUp = this.activePowerUps.get(powerUpName);
+                if (!powerUp) return;
+                
+                const timer = setInterval(() => {
+                    const elapsed = Date.now() - powerUp.startTime;
+                    powerUp.remaining = Math.max(0, Math.ceil((duration * 1000 - elapsed) / 1000));
+                    
+                    updateActivePowerUpsDisplay();
+                    
+                    if (powerUp.remaining <= 0) {
+                        clearInterval(timer);
+                        this.activePowerUps.delete(powerUpName);
+                        updateActivePowerUpsDisplay();
+                    }
+                }, 1000);
+            }
+        }
+        
+        // Initialize Magic Power-up System
+        function initMagicSystem() {
+            console.log('🔮 Initializing Magic Power-up System...');
+            magicSystem = new PowerUpSystem();
+            updatePowerUpButtons();
+            updateActivePowerUpsDisplay();
+        }
+        
+        function updatePowerUpButtons() {
+            if (!magicSystem) return;
+            
+            // Update button costs from power-up system
+            document.getElementById('hintCost').textContent = `(${magicSystem.powerUps.hint.cost})`;
+            document.getElementById('shuffleCost').textContent = `(${magicSystem.powerUps.shuffle.cost})`;
+            document.getElementById('solveCost').textContent = `(${magicSystem.powerUps.solvePiece.cost})`;
+            document.getElementById('visionCost').textContent = `(${magicSystem.powerUps.vision.cost})`;
+            document.getElementById('freezeCost').textContent = `(${magicSystem.powerUps.timeFreeze.cost})`;
+            
+            // Update button cooldown states
+            Object.keys(magicSystem.powerUps).forEach(powerUpName => {
+                const cooldownEnd = magicSystem.cooldowns.get(powerUpName);
+                const button = document.getElementById(`${powerUpName}Btn`) || 
+                              document.getElementById(powerUpName === 'solvePiece' ? 'solveBtn' : 
+                                                   powerUpName === 'timeFreeze' ? 'freezeBtn' : 
+                                                   `${powerUpName}Btn`);
+                
+                if (button && cooldownEnd) {
+                    const remaining = Math.ceil((cooldownEnd - Date.now()) / 1000);
+                    if (remaining > 0) {
+                        button.classList.add('cooldown');
+                        button.disabled = true;
+                        const originalText = button.innerHTML;
+                        button.innerHTML = `<i class="fas fa-clock"></i> ${remaining}s`;
+                        
+                        setTimeout(() => {
+                            button.classList.remove('cooldown');
+                            button.disabled = false;
+                            button.innerHTML = originalText;
+                        }, remaining * 1000);
+                    }
+                }
+            });
+        }
+        
+        function updateActivePowerUpsDisplay() {
+            const container = document.getElementById('activePowerups');
+            if (!magicSystem) {
+                container.style.display = 'none';
+                return;
+            }
+            
+            container.innerHTML = '';
+            
+            magicSystem.activePowerUps.forEach((powerUp, powerUpName) => {
+                const powerUpInfo = magicSystem.powerUps[powerUpName];
+                const powerUpEl = document.createElement('div');
+                powerUpEl.className = 'power-up-indicator';
+                powerUpEl.innerHTML = `
+                    <i class="fas ${powerUpInfo.icon}"></i>
+                    <span>${powerUpInfo.name}</span>
+                    <span class="power-up-timer">${powerUp.remaining}s</span>
+                `;
+                container.appendChild(powerUpEl);
+            });
+            
+            if (container.children.length > 0) {
+                container.style.display = 'flex';
+            } else {
+                container.style.display = 'none';
+            }
+        }
+        
+        // ========== EXISTING GAME CODE ==========
+        
+        // Sound Functions
+        function playSound(type) {
+            try {
+                console.log(`Playing sound: ${type}`);
+                
+                let soundFile = '';
+                switch(type) {
+                    case 'click': soundFile = 'sounds/click.mp3'; break;
+                    case 'shuffle': soundFile = 'sounds/shuffle.mp3'; break;
+                    case 'win': case 'success': case 'victory': soundFile = 'sounds/win.mp3'; break;
+                    case 'move': case 'hint': case 'magic': soundFile = 'sounds/click.mp3'; break;
+                    default: soundFile = 'sounds/click.mp3';
+                }
+                
+                const audio = new Audio(soundFile);
+                audio.volume = 0.7;
+                audio.play().catch(error => {
+                    console.log(`Sound play failed for ${type}:`, error);
+                });
+            } catch (error) {
+                console.log('Sound system error:', error);
+            }
+        }
+        
+        // Background Music
+        function initBackgroundMusic() {
+            const music = document.getElementById('bgMusic');
+            if (!music) return;
+            
+            music.volume = 0.3;
+            music.loop = true;
+            
+            const playMusic = () => {
+                music.play().catch(e => {
+                    console.log('Background music autoplay prevented');
+                });
+            };
+            
+            setTimeout(playMusic, 1000);
+            
+            document.addEventListener('click', function initMusic() {
+                playMusic();
+                document.removeEventListener('click', initMusic);
+            }, { once: true });
+        }
+        
+        function toggleMusic() {
+            const music = document.getElementById('bgMusic');
+            if (music.paused) {
+                music.play();
+                playSound('click');
+                showNotification('Music turned ON', 'success');
+            } else {
+                music.pause();
+                playSound('click');
+                showNotification('Music turned OFF', 'info');
+            }
+        }
+        
+        // Graduate Feature: Game State Management
+        class GameState {
+            constructor() {
+                this.tiles = [];
+                this.size = 4;
+                this.moves = 0;
+                this.time = 0;
+                this.timer = null;
+                this.difficulty = 1.0;
+                this.version = 'santa';
+                this.mana = 100;
+                this.storyChapter = 1;
+                this.storyProgress = 20;
+                this.aiEnabled = true;
+                this.achievements = [];
+            }
+            
+            save() {
+                const state = {
+                    tiles: this.tiles,
+                    size: this.size,
+                    moves: this.moves,
+                    time: this.time,
+                    difficulty: this.difficulty,
+                    version: this.version,
+                    mana: this.mana,
+                    storyChapter: this.storyChapter,
+                    storyProgress: this.storyProgress
+                };
+                localStorage.setItem('puzzleState', JSON.stringify(state));
+            }
+            
+            load() {
+                const saved = localStorage.getItem('puzzleState');
+                if (saved) {
+                    const state = JSON.parse(saved);
+                    Object.assign(this, state);
+                    return true;
+                }
+                return false;
+            }
+        }
+        
+        // Initialize global game state
+        const gameState = new GameState();
+        
+        // Initialize game when page loads
+        function initGame() {
+            console.log('🎮 Initializing Christmas Puzzle Game...');
+            
+            // Get parameters from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            gameState.version = urlParams.get('version') || 'santa';
+            gameState.size = parseInt(urlParams.get('size')) || 4;
+            gameState.difficulty = parseFloat(urlParams.get('difficulty')) || 1.0;
+            
+            // Set display
+            document.getElementById('versionDisplay').textContent = 
+                `${gameState.version.charAt(0).toUpperCase() + gameState.version.slice(1)} Version`;
+            document.getElementById('sizeDisplay').textContent = `${gameState.size}×${gameState.size} Board`;
+            document.getElementById('difficultyDisplay').textContent = gameState.difficulty.toFixed(1);
+            
+            // Apply theme based on version
+            applyVersionTheme(gameState.version);
+            
+            // Initialize puzzle
+            initPuzzle();
+            loadPuzzleImage();
+
+            
+            // Create snowflakes
+            createSnowflakes();
+            
+            // Initialize background music
+            initBackgroundMusic();
+            
+            // Start timer
+            startTimer();
+            
+            // Initialize AI
+            initAI();
+            
+            // Initialize Magic System
+            initMagicSystem();
+            
+            // Load achievements
+            loadAchievements();
+            
+            // Initialize story
+            initStory();
+            
+            console.log('✅ Game initialized:', gameState);
+        }
+        
+        function createSnowflakes() {
+            const container = document.getElementById('snowflakes');
+            container.innerHTML = '';
+            for (let i = 0; i < 50; i++) {
+                const flake = document.createElement('div');
+                flake.className = 'snowflake';
+                flake.style.width = Math.random() * 8 + 4 + 'px';
+                flake.style.height = flake.style.width;
+                flake.style.left = Math.random() * 100 + 'vw';
+                flake.style.animationDuration = Math.random() * 10 + 5 + 's';
+                flake.style.animationDelay = Math.random() * 5 + 's';
+                flake.style.opacity = Math.random() * 0.5 + 0.3;
+                container.appendChild(flake);
+            }
+        }
+        
+        function applyVersionTheme(version) {
+            const themes = {
+                'santa': 'theme-santa',
+                'reindeer': 'theme-reindeer',
+                'elf': 'theme-elf'
+            };
+            
+            // Remove previous theme classes
+            document.body.classList.remove('theme-santa', 'theme-reindeer', 'theme-elf');
+            // Add current theme class
+            document.body.classList.add(themes[version] || 'theme-santa');
+        }
+        
+        function initPuzzle() {
+            // Create solved puzzle
+            gameState.tiles = [];
+            for (let i = 1; i <= gameState.size * gameState.size; i++) {
+                gameState.tiles.push(i === gameState.size * gameState.size ? 0 : i);
+            }
+            
+            // Update grid CSS
+            const grid = document.getElementById('puzzleGrid');
+            grid.style.gridTemplateColumns = `repeat(${gameState.size}, 1fr)`;
+            grid.style.gridTemplateRows = `repeat(${gameState.size}, 1fr)`;
+            grid.style.width = `${gameState.size * 70}px`;
+            grid.style.height = `${gameState.size * 70}px`;
+            
+            // Shuffle
+            shufflePuzzle();
+        }
+        
+function drawPuzzle() {
+    const grid = document.getElementById('puzzleGrid');
+    grid.innerHTML = '';
+
+    const tileSize = grid.clientWidth / gameState.size;
+
+    gameState.tiles.forEach((value, index) => {
+        const tile = document.createElement('div');
+        tile.className = 'tile';
+
+        if (value === 0) {
+            tile.classList.add('empty');
+        } else {
+            // KEEP number (needed for AI & power-ups)
+            tile.textContent = value;
+
+            const row = Math.floor((value - 1) / gameState.size);
+            const col = (value - 1) % gameState.size;
+
+            tile.style.backgroundImage = `url('${puzzleImage.src}')`;
+            tile.style.backgroundSize =
+                `${gameState.size * tileSize}px ${gameState.size * tileSize}px`;
+            tile.style.backgroundPosition =
+                `-${col * tileSize}px -${row * tileSize}px`;
+            tile.style.backgroundRepeat = 'no-repeat';
+
+            tile.onclick = () => moveTile(index);
+
+            // Correct tile highlight
+            if (value === index + 1) {
+                tile.classList.add('correct');
+            }
+
+            // Movable highlight
+            const emptyIndex = gameState.tiles.indexOf(0);
+            const r = Math.floor(index / gameState.size);
+            const c = index % gameState.size;
+            const er = Math.floor(emptyIndex / gameState.size);
+            const ec = emptyIndex % gameState.size;
+
+            if (
+                (Math.abs(r - er) === 1 && c === ec) ||
+                (Math.abs(c - ec) === 1 && r === er)
+            ) {
+                tile.classList.add('movable');
+            }
+        }
+
+        grid.appendChild(tile);
+    });
+
+    // HUD (unchanged)
+    document.getElementById('movesCount').textContent = gameState.moves;
+    document.getElementById('manaDisplay').textContent = gameState.mana;
+    document.getElementById('manaFill').style.width = `${gameState.mana}%`;
+
+    updateStoryDisplay();
+    checkWin();
+}
+
+        
+        
+        function moveTile(index) {
+            const emptyIndex = gameState.tiles.indexOf(0);
+            const row = Math.floor(index / gameState.size);
+            const col = index % gameState.size;
+            const emptyRow = Math.floor(emptyIndex / gameState.size);
+            const emptyCol = emptyIndex % gameState.size;
+            
+            // Check if adjacent
+            const isAdjacent = (Math.abs(row - emptyRow) === 1 && col === emptyCol) || 
+                              (Math.abs(col - emptyCol) === 1 && row === emptyRow);
+            
+            if (isAdjacent) {
+                // Graduate Feature: Play sound FIRST
+                playSound('move');
+                
+                // Swap tiles
+                [gameState.tiles[index], gameState.tiles[emptyIndex]] = 
+                [gameState.tiles[emptyIndex], gameState.tiles[index]];
+                gameState.moves++;
+                
+                // Graduate Feature: Mana regeneration
+                gameState.mana = Math.min(100, gameState.mana + 2);
+                
+                // Graduate Feature: AI learning
+                if (gameState.aiEnabled) {
+                    updateAI();
+                }
+                
+                // Graduate Feature: Version-specific effects
+                applyVersionEffects();
+                
+                drawPuzzle();
+            } else {
+                // Play a different sound if tile is not movable
+                playSound('click');
+            }
+        }
+        
+        function applyVersionEffects() {
+            switch(gameState.version) {
+                case 'santa':
+                    // Adaptive difficulty
+                    if (gameState.moves % 10 === 0) {
+                        gameState.difficulty = Math.min(5, gameState.difficulty + 0.1);
+                        document.getElementById('difficultyDisplay').textContent = 
+                            gameState.difficulty.toFixed(1);
+                    }
+                    break;
+                case 'reindeer':
+                    // Multiplayer sync simulation
+                    if (gameState.moves % 5 === 0) {
+                        gameState.mana += 1;
+                    }
+                    break;
+                case 'elf':
+                    // AI enhancements
+                    if (gameState.moves % 3 === 0) {
+                        showAISuggestion();
+                    }
+                    break;
+            }
+        }
+        
+        function shufflePuzzle() {
+            playSound('shuffle');
+            
+            gameState.moves = 0;
+            gameState.time = 0;
+            gameState.difficulty = 1.0;
+            gameState.mana = 100;
+            
+            // Fisher-Yates shuffle with solvability check
+            do {
+                for (let i = gameState.tiles.length - 1; i > 0; i--) {
+                    if (gameState.tiles[i] === 0) continue;
+                    const j = Math.floor(Math.random() * i);
+                    [gameState.tiles[i], gameState.tiles[j]] = 
+                    [gameState.tiles[j], gameState.tiles[i]];
+                }
+            } while (!isSolvable() || isSolved());
+            
+            drawPuzzle();
+            document.getElementById('difficultyDisplay').textContent = 
+                gameState.difficulty.toFixed(1);
+            
+            // Graduate Feature: Show notification
+            showNotification('Puzzle shuffled!', 'info');
+        }
+        
+        function isSolvable() {
+            // Count inversions
+            let inversions = 0;
+            const arr = gameState.tiles.filter(t => t !== 0);
+            
+            for (let i = 0; i < arr.length; i++) {
+                for (let j = i + 1; j < arr.length; j++) {
+                    if (arr[i] > arr[j]) inversions++;
+                }
+            }
+            
+            // For 4x4: solvable if inversions is even
+            return inversions % 2 === 0;
+        }
+        
+        function isSolved() {
+            for (let i = 0; i < gameState.tiles.length - 1; i++) {
+                if (gameState.tiles[i] !== i + 1) return false;
+            }
+            return gameState.tiles[gameState.tiles.length - 1] === 0;
+        }
+        
+        function startTimer() {
+            clearInterval(gameState.timer);
+            gameState.timer = setInterval(() => {
+                gameState.time++;
+                document.getElementById('timerDisplay').textContent = `${gameState.time}s`;
+                
+                // Graduate Feature: Time-based difficulty increase
+                if (gameState.version === 'santa' && gameState.time % 10 === 0) {
+                    gameState.difficulty = Math.min(5, gameState.difficulty + 0.1);
+                    document.getElementById('difficultyDisplay').textContent = 
+                        gameState.difficulty.toFixed(1);
+                }
+                
+                // Graduate Feature: Time-based mana regeneration
+                if (gameState.time % 30 === 0) {
+                    gameState.mana = Math.min(100, gameState.mana + 10);
+                    document.getElementById('manaDisplay').textContent = gameState.mana;
+                    document.getElementById('manaFill').style.width = `${gameState.mana}%`;
+                }
+            }, 1000);
+        }
+        
+        // ========== MAGIC POWER-UP FUNCTIONS ==========
+        
+        function useHint() {
+            if (magicSystem.activatePowerUp('hint', gameState)) {
+                playSound('hint');
+                updateManaDisplay();
+                updatePowerUpButtons();
+                
+                showNotification(`${magicSystem.powerUps.hint.name} activated!`, 'success');
+            }
+        }
+        
+        function useMagic(type) {
+            let powerUpName;
+            switch(type) {
+                case 'shuffle':
+                    powerUpName = 'shuffle';
+                    break;
+                case 'solve':
+                    powerUpName = 'solvePiece';
+                    break;
+                case 'vision':
+                    powerUpName = 'vision';
+                    break;
+                case 'freeze':
+                    powerUpName = 'timeFreeze';
+                    break;
+                default:
+                    showNotification('Unknown power-up!', 'error');
+                    return;
+            }
+            
+            if (magicSystem.activatePowerUp(powerUpName, gameState)) {
+                playSound('magic');
+                updateManaDisplay();
+                updatePowerUpButtons();
+                updateActivePowerUpsDisplay();
+                
+                // Apply visual effects
+                applyPowerUpVisualEffects(powerUpName);
+                
+                showNotification(`${magicSystem.powerUps[powerUpName].name} activated!`, 'success');
+            }
+        }
+        
+        function applyPowerUpVisualEffects(powerUpName) {
+            switch(powerUpName) {
+                case 'vision':
+                    createCrystalEffect();
+                    break;
+                case 'timeFreeze':
+                    createFrostEffect();
+                    break;
+                case 'hint':
+                    createSparkleEffect();
+                    break;
+            }
+        }
+        
+        function createCrystalEffect() {
+            const container = document.getElementById('puzzleGrid');
+            for (let i = 0; i < 15; i++) {
+                const crystal = document.createElement('div');
+                crystal.style.position = 'absolute';
+                crystal.style.width = Math.random() * 8 + 4 + 'px';
+                crystal.style.height = crystal.style.width;
+                crystal.style.background = `rgba(${Math.random() * 255}, ${Math.random() * 255}, 255, 0.7)`;
+                crystal.style.borderRadius = '50%';
+                crystal.style.left = Math.random() * 100 + '%';
+                crystal.style.top = Math.random() * 100 + '%';
+                crystal.style.pointerEvents = 'none';
+                crystal.style.animation = 'frostFloat 2s ease-out forwards';
+                container.appendChild(crystal);
+                
+                setTimeout(() => crystal.remove(), 2000);
+            }
+        }
+        
+        function createFrostEffect() {
+            const stats = document.querySelector('.stats');
+            for (let i = 0; i < 20; i++) {
+                const frost = document.createElement('div');
+                frost.style.position = 'absolute';
+                frost.style.width = Math.random() * 6 + 2 + 'px';
+                frost.style.height = frost.style.width;
+                frost.style.background = 'rgba(173, 216, 230, 0.7)';
+                frost.style.borderRadius = '50%';
+                frost.style.left = Math.random() * 100 + '%';
+                frost.style.top = Math.random() * 100 + '%';
+                frost.style.pointerEvents = 'none';
+                frost.style.animation = 'frostFloat 3s ease-out forwards';
+                stats.appendChild(frost);
+                
+                setTimeout(() => frost.remove(), 3000);
+            }
+        }
+        
+        function createSparkleEffect() {
+            const buttons = document.querySelectorAll('.panel button');
+            buttons.forEach(button => {
+                button.classList.add('power-up-active');
+                setTimeout(() => {
+                    button.classList.remove('power-up-active');
+                }, 1000);
+            });
+        }
+        
+        function updateManaDisplay() {
+            document.getElementById('manaDisplay').textContent = gameState.mana;
+            document.getElementById('manaFill').style.width = `${gameState.mana}%`;
+        }
+        
+        // Graduate Feature: AI System
+        function initAI() {
+            // Show AI panel
+            document.getElementById('aiSuggestionPanel').style.display = 'block';
+            
+            // Initialize AI suggestions
+            setTimeout(() => {
+                showAISuggestion();
+            }, 1000);
+        }
+        
+        function updateAI() {
+            // Analyze moves and update suggestions
+            if (gameState.moves % 5 === 0) {
+                showAISuggestion();
+            }
+        }
+        
+        function showAISuggestion() {
+            const suggestions = [
+                "Try solving the corners first, then the edges.",
+                "Plan 2-3 moves ahead to improve efficiency.",
+                "Focus on getting the first row completed.",
+                "Use the Manhattan distance to estimate difficulty.",
+                "Take your time - rushing leads to more moves.",
+                "Try to create a pattern while solving.",
+                "Work on one section of the puzzle at a time.",
+                "Remember: The empty space is your friend!"
+            ];
+            
+            const randomSuggestion = suggestions[Math.floor(Math.random() * suggestions.length)];
+            document.getElementById('aiSuggestionText').textContent = randomSuggestion;
+            
+            // Pulse animation
+            const panel = document.getElementById('aiSuggestionPanel');
+            panel.style.animation = 'none';
+            setTimeout(() => {
+                panel.style.animation = 'pulseGlow 3s infinite';
+            }, 10);
+        }
+        
+        // Graduate Feature: Story System
+        function initStory() {
+            gameState.storyChapter = localStorage.getItem('storyChapter') || 1;
+            gameState.storyProgress = localStorage.getItem('storyProgress') || 20;
+            updateStoryDisplay();
+        }
+        
+        function updateStoryDisplay() {
+            document.getElementById('storyChapter').textContent = `Chapter ${gameState.storyChapter}`;
+            document.getElementById('storyProgressFill').style.width = `${gameState.storyProgress}%`;
+        }
+        
+        function updateStoryProgress() {
+            gameState.storyProgress = Math.min(100, gameState.storyProgress + 10);
+            if (gameState.storyProgress >= 100) {
+                gameState.storyChapter++;
+                gameState.storyProgress = 0;
+                showNotification(`Chapter ${gameState.storyChapter} unlocked!`, 'success');
+            }
+            localStorage.setItem('storyChapter', gameState.storyChapter);
+            localStorage.setItem('storyProgress', gameState.storyProgress);
+            updateStoryDisplay();
+        }
+        
+        // Graduate Feature: Achievements System
+        function loadAchievements() {
+            // Mock achievements for demo
+            gameState.achievements = [
+                { id: 1, title: 'First Move', description: 'Made your first move', icon: '🚀', unlocked: true },
+                { id: 2, title: 'Puzzle Novice', description: 'Solved 3 puzzles', icon: '🧩', unlocked: true },
+                { id: 3, title: 'Mana Master', description: 'Used 10 power-ups', icon: '⚡', unlocked: false },
+                { id: 4, title: 'Speed Demon', description: 'Solved in under 60 seconds', icon: '⚡', unlocked: false },
+                { id: 5, title: 'Perfect Solver', description: 'Solved with optimal moves', icon: '👑', unlocked: false }
+            ];
+            
+            // Display active achievements
+            const activePanel = document.getElementById('achievementsPanel');
+            const activeList = document.getElementById('achievementsList');
+            
+            const unlocked = gameState.achievements.filter(a => a.unlocked);
+            if (unlocked.length > 0) {
+                activePanel.style.display = 'block';
+                activeList.innerHTML = '';
+                unlocked.forEach(achievement => {
+                    const badge = document.createElement('div');
+                    badge.className = 'achievement-badge';
+                    badge.innerHTML = `${achievement.icon} ${achievement.title}`;
+                    badge.title = achievement.description;
+                    activeList.appendChild(badge);
+                });
+            }
+        }
+        
+        function unlockAchievement(id) {
+            const achievement = gameState.achievements.find(a => a.id === id);
+            if (achievement && !achievement.unlocked) {
+                achievement.unlocked = true;
+                showNotification(`Achievement Unlocked: ${achievement.title}`, 'success');
+                loadAchievements();
+                return true;
+            }
+            return false;
+        }
+        
+        function checkWin() {
+            if (isSolved()) {
+                clearInterval(gameState.timer);
+                
+                // Graduate Feature: Unlock achievements
+                unlockAchievement(3); // Mana Master
+                if (gameState.time < 60) unlockAchievement(4); // Speed Demon
+                if (gameState.moves < 50) unlockAchievement(5); // Perfect Solver
+                
+                // Graduate Feature: Update story progress
+                updateStoryProgress();
+                
+                // Graduate Feature: Save to database
+                saveGame(true);
+                
+                // Play victory sound
+                playSound('victory');
+                
+                // Show victory modal
+                showVictory();
+            }
+        }
+        
+        function showVictory() {
+            // Create confetti
+            createConfetti();
+            
+            // Update victory modal content
+            document.getElementById('victoryTime').textContent = `${gameState.time}s`;
+            document.getElementById('victoryMoves').textContent = gameState.moves;
+            document.getElementById('victoryEfficiency').textContent = 
+                (gameState.moves / gameState.time).toFixed(2);
+            document.getElementById('victoryDifficulty').textContent = 
+                gameState.difficulty.toFixed(1);
+            
+            // AI Analysis
+            const analysis = `Great job! You solved a ${gameState.size}×${gameState.size} puzzle in ${gameState.time} seconds with ${gameState.moves} moves. `;
+            document.getElementById('victoryAnalysis').textContent = analysis;
+            
+            // Story progress
+            document.getElementById('victoryProgressFill').style.width = `${gameState.storyProgress}%`;
+            document.getElementById('victoryStoryProgress').textContent = 
+                `Chapter ${gameState.storyChapter}: ${gameState.storyProgress}% complete`;
+            
+            // Show unlocked achievements
+            const unlocked = gameState.achievements.filter(a => a.unlocked);
+            const achievementsContainer = document.getElementById('victoryAchievements');
+            achievementsContainer.innerHTML = '';
+            unlocked.forEach(achievement => {
+                const badge = document.createElement('div');
+                badge.className = 'achievement-badge';
+                badge.innerHTML = `${achievement.icon} ${achievement.title}`;
+                achievementsContainer.appendChild(badge);
+            });
+            
+            // Show modal
+            document.getElementById('victoryModal').style.display = 'flex';
+        }
+        
+        function createConfetti() {
+            for (let i = 0; i < 150; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + 'vw';
+                    confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 60%)`;
+                    confetti.style.animationDelay = Math.random() * 2 + 's';
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => confetti.remove(), 3000);
+                }, i * 20);
+            }
+        }
+        
+        function playAgain() {
+            playSound('click');
+            // Hide victory modal
+            document.getElementById('victoryModal').style.display = 'none';
+            
+            // Reset game
+            gameState.moves = 0;
+            gameState.time = 0;
+            gameState.mana = 100;
+            
+            // Shuffle new puzzle
+            shufflePuzzle();
+            
+            // Restart timer
+            startTimer();
+            
+            // Update displays
+            document.getElementById('timerDisplay').textContent = '0s';
+            document.getElementById('movesCount').textContent = '0';
+            updateManaDisplay();
+        }
+        
+        function goToMenu() {
+            playSound('click');
+            window.location.href = 'index.html';
+        }
+        
+        function shareVictory() {
+            playSound('click');
+            const text = `I just solved a ${gameState.size}×${gameState.size} Christmas puzzle in ${gameState.time} seconds with ${gameState.moves} moves! 🎄🎅`;
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Christmas Puzzle Victory!',
+                    text: text,
+                    url: window.location.href
+                });
+            } else {
+                navigator.clipboard.writeText(text);
+                showNotification('Victory copied to clipboard!', 'success');
+            }
+        }
+        
+        function saveGame(isWin = false) {
+            try {
+                // Try to save to backend
+                const response = fetch('http://localhost:3000/api/save-game', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        moves: gameState.moves,
+                        time: gameState.time,
+                        difficulty: gameState.difficulty,
+                        isWin: isWin,
+                        tiles: gameState.tiles,
+                        size: gameState.size,
+                        version: gameState.version,
+                        manaUsed: 100 - gameState.mana
+                    })
+                });
+                
+                console.log('Game saved to database (simulated)');
+                document.getElementById('dbStatus').textContent = 'Saved';
+                document.getElementById('dbStatus').style.color = '#10b981';
+                return true;
+            } catch (error) {
+                console.log('Playing in offline mode');
+                document.getElementById('dbStatus').textContent = 'Offline';
+                document.getElementById('dbStatus').style.color = '#94a3b8';
+            }
+            
+            // Fallback: Save to localStorage
+            gameState.save();
+            showNotification('Game progress saved locally', 'info');
+            return false;
+        }
+        
+        function showNotification(message, type = 'info') {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? 'rgba(34, 197, 94, 0.9)' : 
+                          type === 'error' ? 'rgba(239, 68, 68, 0.9)' : 
+                          'rgba(59, 130, 246, 0.9)'};
+                color: white;
+                padding: 15px 25px;
+                border-radius: 10px;
+                z-index: 9999;
+                animation: slideIn 0.3s ease-out;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+                border-left: 4px solid ${type === 'success' ? '#16a34a' : 
+                              type === 'error' ? '#dc2626' : '#2563eb'};
+                max-width: 300px;
+            `;
+            
+            notification.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : 
+                                     type === 'error' ? 'exclamation-circle' : 
+                                     'info-circle'}"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Add animation
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideIn {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+                @keyframes slideOut {
+                    from { transform: translateX(0); opacity: 1; }
+                    to { transform: translateX(100%); opacity: 0; }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.style.animation = 'slideOut 0.3s ease-out';
+                    setTimeout(() => {
+                        if (notification.parentNode) {
+                            notification.parentNode.removeChild(notification);
+                        }
+                    }, 300);
+                }
+            }, 3000);
+        }
+        
+        // Initialize game when page loads
+        window.onload = initGame;
+        
+        // Make functions available globally
+        window.shufflePuzzle = shufflePuzzle;
+        window.useHint = useHint;
+        window.useMagic = useMagic;
+        window.saveGame = () => saveGame(false);
+        window.playAgain = playAgain;
+        window.goToMenu = goToMenu;
+        window.shareVictory = shareVictory;
+        window.toggleMusic = toggleMusic;
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            switch(e.key) {
+                case 'r':
+                case 'R':
+                    if (e.ctrlKey) shufflePuzzle();
+                    break;
+                case 'h':
+                case 'H':
+                    if (e.ctrlKey) useHint();
+                    break;
+                case 'Escape':
+                    document.getElementById('victoryModal').style.display = 'none';
+                    break;
+                case 'm':
+                case 'M':
+                    if (e.ctrlKey) toggleMusic();
+                    break;
+            }
+        });
+    </script>
+</body>
+</html>

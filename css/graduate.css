@@ -1,0 +1,78 @@
+/* Graduate Features Styling */
+.graduate-panel {
+    background: rgba(0, 20, 40, 0.95);
+    backdrop-filter: blur(20px);
+    border: 2px solid;
+    border-image: linear-gradient(45deg, #ffd700, #ff6b6b, #4ecdc4) 1;
+    border-radius: 20px;
+    box-shadow: 
+        0 0 50px rgba(255, 215, 0, 0.3),
+        inset 0 0 30px rgba(255, 255, 255, 0.1);
+}
+
+/* AI Prediction Dashboard */
+.ai-dashboard {
+    background: linear-gradient(135deg, #001f3f, #001122);
+    border-left: 4px solid #38bdf8;
+    padding: 20px;
+    border-radius: 15px;
+}
+
+.ai-suggestion {
+    background: rgba(56, 189, 248, 0.1);
+    border: 1px solid #38bdf8;
+    padding: 15px;
+    border-radius: 10px;
+    animation: pulseGlow 3s infinite;
+}
+
+/* Story Mode */
+.story-book {
+    background: rgba(139, 69, 19, 0.9);
+    border: 3px solid #8b4513;
+    border-radius: 10px;
+    padding: 20px;
+    font-family: 'Cinzel', serif;
+    color: #f5deb3;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.story-choice {
+    background: linear-gradient(135deg, #2d5016, #3a7c1c);
+    border: 2px solid #4ade80;
+    color: white;
+    padding: 10px 20px;
+    margin: 10px;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.story-choice:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(74, 222, 128, 0.4);
+}
+
+/* Social Features */
+.friend-list {
+    background: rgba(30, 41, 59, 0.9);
+    border-radius: 15px;
+    padding: 15px;
+}
+
+.challenge-badge {
+    background: linear-gradient(135deg, #c2410c, #ea580c);
+    color: white;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    animation: pulseGlow 2s infinite;
+}
+
+/* Analytics Charts */
+.chart-container {
+    background: rgba(15, 23, 42, 0.8);
+    border-radius: 15px;
+    padding: 20px;
+    border: 1px solid #334155;
+}
