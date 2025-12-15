@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Christmas Story - Graduate Edition</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/graduate.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Eagle+Lake&display=swap" rel="stylesheet">
+    <style>
+        /* Root variables from index.html for consistency */
+        :root {
+            --christmas-red: #d42426;
+            --christmas-green: #165b33;
+            --christmas-gold: #ffd700;
+            --christmas-blue: #0ea5e9;
+            --gold: #ffd700;
+        }
+        
+        body {
+            background: linear-gradient(rgba(0, 20, 40, 0.9), rgba(0, 10, 30, 0.9));
+            background-size: cover;
+            background-attachment: fixed;
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            margin: 0;
+            padding: 0;
+        }
+        
+        /* Snow Animation */
+        #snowflakes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .snowflake {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.8;
+            animation: snowfall linear infinite;
+        }
+        
+        @keyframes snowfall {
+            0% { transform: translateY(-100px) rotate(0deg); }
+            100% { transform: translateY(100vh) rotate(360deg); }
+        }
+        
+        .story-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            min-height: 100vh;
+            background: rgba(10, 25, 47, 0.9);
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .story-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(0, 20, 40, 0.9), rgba(0, 10, 30, 0.9));
+            opacity: 0.1;
+            z-index: -1;
+        }
+        
+        .story-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .story-title {
+            font-family: 'Mountains of Christmas', cursive;
+            font-size: 3rem;
+            color: #ffd700;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+            margin-bottom: 10px;
+        }
+        
+        .story-subtitle {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #94a3b8;
+            font-size: 1.2rem;
+        }
+        
+        .chapter-container {
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            position: relative;
+            transition: all 0.3s;
+        }
+        
+        .chapter-container:hover {
+            border-color: var(--gold);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.2);
+        }
+        
+        .chapter-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .chapter-number {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 1.5rem;
+            color: var(--gold);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .chapter-status {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        .status-locked {
+            background: rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        
+        .status-unlocked {
+            background: rgba(34, 197, 94, 0.2);
+            color: #86efac;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+        
+        .status-completed {
+            background: rgba(59, 130, 246, 0.2);
+            color: #93c5fd;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+        
+        .chapter-title {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 1.8rem;
+            color: white;
+            margin-bottom: 15px;
+        }
+        
+        .chapter-content {
+            color: #cbd5e1;
+            line-height: 1.8;
+            margin-bottom: 25px;
+            font-size: 1.1rem;
+        }
+        
+        .chapter-objectives {
+            background: rgba(30, 41, 59, 0.5);
+            border-left: 4px solid var(--gold);
+            padding: 15px;
+            margin-bottom: 25px;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .objective-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+        
+        .objective-item.completed {
+            color: #86efac;
+        }
+        
+        .objective-item.incomplete {
+            color: #fca5a5;
+        }
+        
+        .chapter-actions {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .btn-play-chapter {
+            background: linear-gradient(135deg, var(--gold), #ffaa00);
+            color: black;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .btn-play-chapter:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 215, 0, 0.3);
+        }
+        
+        .btn-play-chapter:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .btn-read-story {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-read-story:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .story-progress {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid var(--gold);
+            z-index: 1000;
+        }
+        
+        .progress-title {
+            color: var(--gold);
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+        
+        .progress-bar {
+            width: 200px;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--gold), #ffaa00);
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+        
+        .progress-text {
+            color: white;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+        
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+        
+        .back-btn:hover {
+            background: rgba(255, 215, 0, 0.2);
+            color: var(--gold);
+        }
+        
+        @media (max-width: 768px) {
+            .story-container {
+                padding: 20px 15px;
+            }
+            
+            .story-title {
+                font-size: 2rem;
+            }
+            
+            .chapter-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .chapter-actions {
+                flex-direction: column;
+            }
+            
+            .story-progress {
+                position: static;
+                margin: 20px auto;
+                width: 90%;
+            }
+            
+            .progress-bar {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Snowflakes -->
+    <div id="snowflakes"></div>
+    
+    <!-- Story Background -->
+    <div class="story-background"></div>
+    
+    <!-- Back Button -->
+    <button class="back-btn" onclick="window.location.href='index.html'">
+        <i class="fas fa-arrow-left"></i> Back to Menu
+    </button>
+    
+    <!-- Story Progress -->
+    <div class="story-progress">
+        <div class="progress-title">Story Progress</div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="storyProgressFill"></div>
+        </div>
+        <div class="progress-text" id="storyProgressText"></div>
+    </div>
+    
+    <!-- Main Container -->
+    <div class="story-container">
+        <div class="story-header">
+            <h1 class="story-title">The Christmas Chronicles</h1>
+            <p class="story-subtitle">An interactive puzzle adventure</p>
+        </div>
+        
+        <!-- Chapter 1 -->
+        <div class="chapter-container" id="chapter1">
+            <div class="chapter-header">
+                <div class="chapter-number">
+                    <i class="fas fa-snowflake"></i>
+                    Chapter 1: The Frozen Workshop
+                </div>
+                <div class="chapter-status status-completed">Completed</div>
+            </div>
+            
+            <h2 class="chapter-title">The Great Freeze</h2>
+            
+            <div class="chapter-content">
+                <p>It was the night before Christmas, and all through Santa's workshop, not a creature was stirring... because everything was frozen solid!</p>
+                <p>A magical frost has swept through the North Pole, freezing the gears and mechanisms that power Santa's gift-making machines. Without heat, Christmas morning will be ruined!</p>
+                <p>As Santa's chief puzzle-solving elf, you must generate enough thermal energy by solving sliding puzzles. Each puzzle solved creates warmth that thaws the machinery.</p>
+            </div>
+            
+            <div class="chapter-objectives">
+                <h3>Objectives:</h3>
+                <div class="objective-item completed">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Complete the tutorial puzzle</span>
+                </div>
+                <div class="objective-item completed">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Solve 3 puzzles under 2 minutes each</span>
+                </div>
+                <div class="objective-item completed">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Unlock the main gear mechanism</span>
+                </div>
+            </div>
+            
+            <div class="chapter-actions">
+                <button class="btn-play-chapter" onclick="playChapter(1)">
+                    <i class="fas fa-play"></i> Play Chapter 1
+                </button>
+                <button class="btn-read-story" onclick="readChapter(1)">
+                    <i class="fas fa-book-open"></i> Read Full Story
+                </button>
+            </div>
+        </div>
+        
+        <!-- Chapter 2 -->
+        <div class="chapter-container" id="chapter2">
+            <div class="chapter-header">
+                <div class="chapter-number">
+                    <i class="fas fa-horse-head"></i>
+                    Chapter 2: Reindeer Rebellion
+                </div>
+                <div class="chapter-status status-unlocked">Unlocked</div>
+            </div>
+            
+            <h2 class="chapter-title">The Runaway Reindeer</h2>
+            
+            <div class="chapter-content">
+                <p>The gears are turning again, but a new problem has arisen! The reindeer are refusing to fly, claiming they need "proof of intelligence" before taking off.</p>
+                <p>Rudolph has challenged you to a series of puzzle duels. Only by proving your strategic thinking can you convince the reindeer to pull the sleigh.</p>
+                <p>This chapter introduces competitive puzzles and timed challenges against Rudolph and the other reindeer.</p>
+            </div>
+            
+            <div class="chapter-objectives">
+                <h3>Objectives:</h3>
+                <div class="objective-item completed">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Defeat Rudolph in a puzzle duel</span>
+                </div>
+                <div class="objective-item completed">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Complete 5 puzzles under 90 seconds</span>
+                </div>
+                <div class="objective-item incomplete">
+                    <i class="fas fa-times-circle"></i>
+                    <span>Win a 5x5 puzzle challenge</span>
+                </div>
+            </div>
+            
+            <div class="chapter-actions">
+                <button class="btn-play-chapter" onclick="playChapter(2)">
+                    <i class="fas fa-play"></i> Play Chapter 2
+                </button>
+                <button class="btn-read-story" onclick="readChapter(2)">
+                    <i class="fas fa-book-open"></i> Read Full Story
+                </button>
+            </div>
+        </div>
+        
+        <!-- Chapter 3 -->
+        <div class="chapter-container" id="chapter3">
+            <div class="chapter-header">
+                <div class="chapter-number">
+                    <i class="fas fa-sleigh"></i>
+                    Chapter 3: The Christmas Flight
+                </div>
+                <div class="chapter-status status-unlocked">Unlocked</div>
+            </div>
+            
+            <h2 class="chapter-title">Into the Night Sky</h2>
+            
+            <div class="chapter-content">
+                <p>The reindeer are hitched and ready! But the sleigh's navigation system has gone haywire. You must solve a series of complex puzzles to plot the course around the world.</p>
+                <p>Each country presents a unique puzzle challenge. Solve them to unlock the next destination on Santa's route.</p>
+                <p>Features include multi-stage puzzles, hidden bonuses, and special power-ups for navigating through stormy weather.</p>
+            </div>
+            
+            <div class="chapter-objectives">
+                <h3>Objectives:</h3>
+                <div class="objective-item incomplete">
+                    <i class="fas fa-times-circle"></i>
+                    <span>Navigate through 5 countries</span>
+                </div>
+                <div class="objective-item incomplete">
+                    <i class="fas fa-times-circle"></i>
+                    <span>Solve the storm navigation puzzle</span>
+                </div>
+                <div class="objective-item incomplete">
+                    <i class="fas fa-times-circle"></i>
+                    <span>Reach the final destination</span>
+                </div>
+            </div>
+            
+            <div class="chapter-actions">
+                <button class="btn-play-chapter" onclick="playChapter(3)">
+                    <i class="fas fa-play"></i> Play Chapter 3
+                </button>
+                <button class="btn-read-story" onclick="readChapter(3)">
+                    <i class="fas fa-book-open"></i> Read Full Story
+                </button>
+            </div>
+        </div>
+        
+        <!-- Chapter 4 -->
+        <div class="chapter-container" id="chapter4">
+            <div class="chapter-header">
+                <div class="chapter-number">
+                    <i class="fas fa-mountain"></i>
+                    Chapter 4: The North Pole Nexus
+                </div>
+                <div class="chapter-status status-locked">Locked</div>
+            </div>
+            
+            <h2 class="chapter-title">The Crystal Caves</h2>
+            
+            <div class="chapter-content">
+                <p>Returning to the North Pole, you discover ancient crystal caves beneath the workshop. The crystals hold the key to preventing future freezes, but their patterns are complex puzzles.</p>
+                <p>This chapter introduces hexagonal puzzles and three-dimensional thinking. Each crystal solved strengthens the workshop's magical protection.</p>
+                <p>Features include new puzzle mechanics, crystal collection, and a boss puzzle against the Ice Guardian.</p>
+            </div>
+            
+            <div class="chapter-objectives">
+                <h3>Objectives:</h3>
+                <div class="objective-item incomplete">
+                    <i class="fas fa-lock"></i>
+                    <span>Complete Chapter 3 to unlock</span>
+                </div>
+            </div>
+            
+            <div class="chapter-actions">
+                <button class="btn-play-chapter" disabled>
+                    <i class="fas fa-lock"></i> Complete Previous Chapter
+                </button>
+            </div>
+        </div>
+        
+        <!-- Chapter 5 -->
+        <div class="chapter-container" id="chapter5">
+            <div class="chapter-header">
+                <div class="chapter-number">
+                    <i class="fas fa-crown"></i>
+                    Chapter 5: The Grand Puzzle Gala
+                </div>
+                <div class="chapter-status status-locked">Locked</div>
+            </div>
+            
+            <h2 class="chapter-title">The Final Celebration</h2>
+            
+            <div class="chapter-content">
+                <p>Christmas is saved! To celebrate, Santa hosts the Grand Puzzle Gala - a tournament against the best puzzle solvers from around the world.</p>
+                <p>Compete in various puzzle styles, from classic sliding puzzles to innovative new formats. The winner earns the title of "Grand Puzzle Master."</p>
+                <p>Features include tournament brackets, special guest opponents, and the ultimate puzzle challenge against Santa himself.</p>
+            </div>
+            
+            <div class="chapter-objectives">
+                <h3>Objectives:</h3>
+                <div class="objective-item incomplete">
+                    <i class="fas fa-lock"></i>
+                    <span>Complete Chapter 4 to unlock</span>
+                </div>
+            </div>
+            
+            <div class="chapter-actions">
+                <button class="btn-play-chapter" disabled>
+                    <i class="fas fa-lock"></i> Complete Previous Chapter
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- JavaScript -->
+    <script>
+        // Story progress tracking
+        function updateStoryProgress() {
+            const totalChapters = 5;
+            const completedChapters = 2; // From localStorage or API
+            const progress = (completedChapters / totalChapters) * 100;
+            
+            document.getElementById('storyProgressFill').style.width = `${progress}%`;
+            document.getElementById('storyProgressText').textContent = 
+                `${completedChapters}/${totalChapters} Chapters Completed`;
+        }
+        
+        function playChapter(chapterNumber) {
+            // Set game parameters for this chapter
+            const chapterConfigs = {
+                1: { version: 'santa', size: 4, difficulty: 2, theme: 'santa' },
+                2: { version: 'reindeer', size: 4, difficulty: 3, theme: 'reindeer' },
+                3: { version: 'elf', size: 5, difficulty: 4, theme: 'northern' }
+            };
+            
+            const config = chapterConfigs[chapterNumber];
+            if (config) {
+                localStorage.setItem('selectedVersion', config.version);
+                localStorage.setItem('boardSize', config.size);
+                localStorage.setItem('difficulty', config.difficulty);
+                localStorage.setItem('theme', config.theme);
+                localStorage.setItem('storyChapter', chapterNumber);
+                
+                window.location.href = `puzzle.html?story=${chapterNumber}`;
+            }
+        }
+        
+        function readChapter(chapterNumber) {
+            const chapterStories = {
+                1: `The night was colder than any in memory. The North Pole's magical heating system had failed, and ice crystals were forming on every surface. Santa found you, his most talented puzzle-solving elf, and gave you a grave look.
+
+"Without heat, the gift-making machines won't work," he said, his breath forming clouds in the freezing air. "But there's an ancient solution - the Thermal Puzzles."
+
+He led you to the Great Gear Chamber, where fifteen crystal tiles floated in the air. "Solve these puzzles," Santa explained, "and each completion generates magical warmth. We need enough to thaw the main drive shaft."
+
+You approached the first puzzle. The tiles showed images of gears and machinery. With careful moves, you slid them into position. As the final tile clicked into place, a wave of warmth spread through the chamber.
+
+One down, many to go. Christmas depended on you...`,
+                
+                2: `The workshop was warm again, but the reindeer stable was in chaos. Rudolph stood defiant, his red nose glowing with irritation.
+
+"We're not flying until we know our driver is smart enough to navigate!" he declared. The other reindeer stamped their hooves in agreement.
+
+Rudolph presented a series of puzzle boards. "Beat me in these challenges, and we'll fly. Lose, and Christmas stays grounded."
+
+The first puzzle was a 4x4 board with a complex starting position. Rudolph went first, solving it in 45 moves. You analyzed the board, seeing patterns he'd missed. Your solution: 38 moves.
+
+Rudolph's eyes widened. "Not bad," he grumbled. "But can you handle a timed challenge?"
+
+The competition continued through the night...`,
+                
+                3: `The sleigh soared into the starry sky, but the Navigation Orb was flickering erratically. "The route coordinates are scrambled!" Santa shouted over the wind.
+
+You examined the orb. It displayed a 5x5 puzzle for each country. Solving it would lock in the coordinates for that destination.
+
+First stop: England. The puzzle showed the London skyline. You slid the tiles, Big Ben falling into place as the coordinates stabilized.
+
+Next: France. The Eiffel Tower puzzle was trickier, with a deceptive starting position. But you solved it, and the sleigh turned south.
+
+Storm clouds gathered ahead. "We need to navigate through this!" Santa yelled. The storm puzzle appeared - the hardest yet...`
+            };
+            
+            const story = chapterStories[chapterNumber];
+            if (story) {
+                const modal = document.createElement('div');
+                modal.className = 'story-modal';
+                modal.innerHTML = `
+                    <div class="story-modal-content">
+                        <h2>Chapter ${chapterNumber}: Full Story</h2>
+                        <div class="story-modal-text">
+                            ${story.replace(/\n/g, '<br><br>')}
+                        </div>
+                        <button class="close-modal" onclick="this.closest('.story-modal').remove()">
+                            Close
+                        </button>
+                    </div>
+                `;
+                
+                modal.onclick = (e) => {
+                    if (e.target === modal) {
+                        document.body.removeChild(modal);
+                    }
+                };
+                
+                document.body.appendChild(modal);
+                
+                // Add styles
+                const style = document.createElement('style');
+                style.textContent = `
+                    .story-modal {
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        background: rgba(0, 0, 0, 0.9);
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        z-index: 9999;
+                        padding: 20px;
+                    }
+                    
+                    .story-modal-content {
+                        background: linear-gradient(135deg, #1e293b, #0f172a);
+                        border-radius: 20px;
+                        padding: 40px;
+                        max-width: 800px;
+                        max-height: 80vh;
+                        overflow-y: auto;
+                        border: 3px solid var(--gold);
+                        position: relative;
+                    }
+                    
+                    .story-modal-content h2 {
+                        color: var(--gold);
+                        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                        margin-bottom: 20px;
+                        text-align: center;
+                    }
+                    
+                    .story-modal-text {
+                        color: #cbd5e1;
+                        line-height: 1.8;
+                        font-size: 1.1rem;
+                        margin-bottom: 30px;
+                    }
+                    
+                    .close-modal {
+                        background: var(--gold);
+                        color: black;
+                        border: none;
+                        padding: 12px 30px;
+                        border-radius: 10px;
+                        font-weight: 600;
+                        cursor: pointer;
+                        display: block;
+                        margin: 0 auto;
+                    }
+                    
+                    @media (max-width: 768px) {
+                        .story-modal-content {
+                            padding: 20px;
+                            max-height: 90vh;
+                        }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+        }
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            updateStoryProgress();
+            
+            // Create animated snowflakes
+            for (let i = 0; i < 30; i++) {
+                const flake = document.createElement('div');
+                flake.className = 'snowflake';
+                flake.style.width = Math.random() * 10 + 5 + 'px';
+                flake.style.height = flake.style.width;
+                flake.style.left = Math.random() * 100 + 'vw';
+                flake.style.animationDuration = Math.random() * 10 + 5 + 's';
+                flake.style.animationDelay = Math.random() * 5 + 's';
+                flake.style.opacity = Math.random() * 0.5 + 0.3;
+                document.getElementById('snowflakes').appendChild(flake);
+            }
+        });
+    </script>
+</body>
+</html>
