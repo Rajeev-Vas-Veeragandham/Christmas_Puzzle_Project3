@@ -1,0 +1,9 @@
+{
+  "homepage": "https://Rajeev-Vas-Veeragandham.github.io/Christmas_Puzzle_Project3",
+  "scripts": {
+    "deploy": "gh-pages -d frontend"
+  },
+  "devDependencies": {
+    "gh-pages": "^6.3.0"
+  }
+}
