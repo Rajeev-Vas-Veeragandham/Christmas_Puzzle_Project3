@@ -104,7 +104,7 @@ app.get('/api/health', async (req, res) => {
     }
 });
 
-// -- LOGIN ENDPOINTS --
+// -- LOGIN ENDPOINTS LOGIC--
 app.post('/api/login', async (req, res) => {
     try {
         const { username } = req.body;
