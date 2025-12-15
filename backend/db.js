@@ -52,7 +52,7 @@ async function initializeDatabase() {
             )
         `);
         
-        // Game sessions table
+        // Game sessions table in sql
         await pool.execute(`
             CREATE TABLE IF NOT EXISTS game_sessions (
                 id INT AUTO_INCREMENT PRIMARY KEY,
@@ -68,7 +68,7 @@ async function initializeDatabase() {
             )
         `);
         
-        // Add Rajeev user if not exists
+        // Add Rajeev user if user does not exist
         await addRajeevUser();
         
         console.log('✅ Database initialized successfully');
