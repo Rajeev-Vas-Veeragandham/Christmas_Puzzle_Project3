@@ -19,7 +19,7 @@
         inset 0 0 30px rgba(255, 255, 255, 0.1);
 }
 
-/* AI Prediction Dashboard */
+/* AI Prediction Dashboard (dashboard fixed)*/
 .ai-dashboard {
     background: linear-gradient(135deg, #001f3f, #001122);
     border-left: 4px solid #38bdf8;
