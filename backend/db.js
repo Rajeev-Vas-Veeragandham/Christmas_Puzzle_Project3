@@ -52,7 +52,7 @@ async function initializeDatabase() {
             )
         `);
         
-        // Game sessions table
+        // Game sessions table in sql
         await pool.execute(`
             CREATE TABLE IF NOT EXISTS game_sessions (
                 id INT AUTO_INCREMENT PRIMARY KEY,
