@@ -782,6 +782,22 @@
     <!-- Main Game JavaScript -->
     <script>
         // ========== POWER-UP SYSTEM INTEGRATION ==========
+
+        /* ================= IMAGE PUZZLE SYSTEM ================= */
+
+const PUZZLE_IMAGES = {
+    santa: 'assets/images/santa.jpg',
+    reindeer: 'assets/images/reindeer.jpg',
+    elf: 'assets/images/elf.jpg'
+};
+
+const puzzleImage = new Image();
+
+function loadPuzzleImage() {
+    puzzleImage.src =
+        PUZZLE_IMAGES[gameState.version] || PUZZLE_IMAGES.santa;
+}
+
         
         // Initialize Magic Power-up System
         let magicSystem = null;
@@ -1237,6 +1253,8 @@
             
             // Initialize puzzle
             initPuzzle();
+            loadPuzzleImage();
+
             
             // Create snowflakes
             createSnowflakes();
@@ -1309,62 +1327,67 @@
             shufflePuzzle();
         }
         
-        function drawPuzzle() {
-            const grid = document.getElementById('puzzleGrid');
-            grid.innerHTML = '';
-            
-            gameState.tiles.forEach((value, index) => {
-                const tile = document.createElement('div');
-                tile.className = 'tile';
-                
-                if (value === 0) {
-                    tile.className = 'tile empty';
-                } else {
-                    tile.textContent = value;
-                    
-                    // Add click event directly to tile
-                    tile.onclick = function() {
-                        moveTile(index);
-                    };
-                    
-                    // Color based on value and theme
-                    const hue = (value * 137.5) % 360; // Golden angle
-                    tile.style.background = `hsl(${hue}, 70%, 45%)`;
-                    
-                    // Check if in correct position
-                    if (value === index + 1) {
-                        tile.classList.add('correct');
-                    }
-                    
-                    // Check if movable
-                    const emptyIndex = gameState.tiles.indexOf(0);
-                    const row = Math.floor(index / gameState.size);
-                    const col = index % gameState.size;
-                    const emptyRow = Math.floor(emptyIndex / gameState.size);
-                    const emptyCol = emptyIndex % gameState.size;
-                    
-                    const isAdjacent = (Math.abs(row - emptyRow) === 1 && col === emptyCol) || 
-                                      (Math.abs(col - emptyCol) === 1 && row === emptyRow);
-                    
-                    if (isAdjacent) {
-                        tile.classList.add('movable');
-                    }
-                }
-                
-                grid.appendChild(tile);
-            });
-            
-            // Update moves display
-            document.getElementById('movesCount').textContent = gameState.moves;
-            document.getElementById('manaDisplay').textContent = gameState.mana;
-            document.getElementById('manaFill').style.width = `${gameState.mana}%`;
-            
-            // Update story progress
-            updateStoryDisplay();
-            
-            // Check win
-            checkWin();
+function drawPuzzle() {
+    const grid = document.getElementById('puzzleGrid');
+    grid.innerHTML = '';
+
+    const tileSize = grid.clientWidth / gameState.size;
+
+    gameState.tiles.forEach((value, index) => {
+        const tile = document.createElement('div');
+        tile.className = 'tile';
+
+        if (value === 0) {
+            tile.classList.add('empty');
+        } else {
+            // KEEP number (needed for AI & power-ups)
+            tile.textContent = value;
+
+            const row = Math.floor((value - 1) / gameState.size);
+            const col = (value - 1) % gameState.size;
+
+            tile.style.backgroundImage = `url('${puzzleImage.src}')`;
+            tile.style.backgroundSize =
+                `${gameState.size * tileSize}px ${gameState.size * tileSize}px`;
+            tile.style.backgroundPosition =
+                `-${col * tileSize}px -${row * tileSize}px`;
+            tile.style.backgroundRepeat = 'no-repeat';
+
+            tile.onclick = () => moveTile(index);
+
+            // Correct tile highlight
+            if (value === index + 1) {
+                tile.classList.add('correct');
+            }
+
+            // Movable highlight
+            const emptyIndex = gameState.tiles.indexOf(0);
+            const r = Math.floor(index / gameState.size);
+            const c = index % gameState.size;
+            const er = Math.floor(emptyIndex / gameState.size);
+            const ec = emptyIndex % gameState.size;
+
+            if (
+                (Math.abs(r - er) === 1 && c === ec) ||
+                (Math.abs(c - ec) === 1 && r === er)
+            ) {
+                tile.classList.add('movable');
+            }
         }
+
+        grid.appendChild(tile);
+    });
+
+    // HUD (unchanged)
+    document.getElementById('movesCount').textContent = gameState.moves;
+    document.getElementById('manaDisplay').textContent = gameState.mana;
+    document.getElementById('manaFill').style.width = `${gameState.mana}%`;
+
+    updateStoryDisplay();
+    checkWin();
+}
+
+        
         
         function moveTile(index) {
             const emptyIndex = gameState.tiles.indexOf(0);
