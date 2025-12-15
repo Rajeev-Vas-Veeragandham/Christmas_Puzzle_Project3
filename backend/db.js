@@ -68,7 +68,7 @@ async function initializeDatabase() {
             )
         `);
         
-        // Add Rajeev user if not exists
+        // Add Rajeev user if user does not exist
         await addRajeevUser();
         
         console.log('✅ Database initialized successfully');
